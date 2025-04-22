@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>シームレス画像変換</title>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    img { max-width: 100%; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+  <h1>画像アップロード（シームレス化）</h1>
+  <input type="file" id="imageInput" accept="image/*" />
+  <button onclick="uploadImage()">送信</button>
+  <h2>結果</h2>
+  <img id="resultImage" src="" />
+
+  <script>
+    async function uploadImage() {
+      const input = document.getElementById("imageInput");
+      const file = input.files[0];
+      if (!file) return alert("画像を選択してください");
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const response = await fetch("http://localhost:8080/seamless", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (response.ok) {
+        const blob = await response.blob();
+        document.getElementById("resultImage").src = URL.createObjectURL(blob);
+      } else {
+        alert("変換に失敗しました");
+      }
+    }
+  </script>
+</body>
+</html>
